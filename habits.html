@@ -1,0 +1,19 @@
+---
+layout: default
+title: Habits
+---
+
+<section class="post">
+  <div class="flex-row-between">
+    <a href="{{ site.url }}{{ site.baseurl }}/">« Home</a>
+    <button title="Change theme" id="theme-toggle" onclick="modeSwitcher()">
+      <div></div>
+    </button>
+  </div>
+  <h2>습관 추적기</h2>
+  <p class="bio">이 브라우저에만 저장됩니다. 어디로도 전송되지 않습니다.</p>
+</section>
+
+<link rel="stylesheet" href="{{ site.url }}{{ site.baseurl }}/assets/habits/habits.css">
+<div id="habit-tracker-root"></div>
+<script type="module" src="{{ site.url }}{{ site.baseurl }}/assets/habits/habits.js"></script>
