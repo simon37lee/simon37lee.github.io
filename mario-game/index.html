@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>우리 아이 마리오</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    overflow: hidden;
+    height: 100%;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  #game-root {
+    width: 100vw;
+    height: 100vh;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto;
+    image-rendering: pixelated;
+  }
+  #touch-controls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 16px;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 10;
+  }
+  #touch-controls .btn {
+    pointer-events: auto;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    border: 2px solid rgba(255,255,255,0.5);
+    color: #fff;
+    font-size: 28px;
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #dpad {
+    display: flex;
+    gap: 12px;
+  }
+  #jump-btn {
+    width: 84px;
+    height: 84px;
+  }
+</style>
+</head>
+<body>
+<div id="game-root"></div>
+<div id="touch-controls">
+  <div id="dpad">
+    <div class="btn" id="btn-left">◀</div>
+    <div class="btn" id="btn-right">▶</div>
+  </div>
+  <div class="btn" id="jump-btn">⤴</div>
+</div>
+
+<script src="lib/phaser.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
