@@ -1,0 +1,62 @@
+# =====================================================================
+#  top.upf : 2 Power (VDDH 1.0V / VDDL 0.8V) + 공통 Ground (VSS)
+#            Level Shifter 예제 (UPF 2.1)
+# =====================================================================
+upf_version 2.1
+set_design_top top
+
+# ---------------------------------------------------------------------
+# 1. Supply port / net
+# ---------------------------------------------------------------------
+create_supply_port VDDH
+create_supply_port VDDL
+create_supply_port VSS
+
+create_supply_net  VDDH
+create_supply_net  VDDL
+create_supply_net  VSS
+
+connect_supply_net VDDH -ports VDDH
+connect_supply_net VDDL -ports VDDL
+connect_supply_net VSS  -ports VSS
+
+# ---------------------------------------------------------------------
+# 2. Supply set
+# ---------------------------------------------------------------------
+create_supply_set SS_HIGH -function {power VDDH} -function {ground VSS}
+create_supply_set SS_LOW  -function {power VDDL} -function {ground VSS}
+
+# ---------------------------------------------------------------------
+# 3. Power domain
+# ---------------------------------------------------------------------
+create_power_domain PD_TOP  -include_scope   -supply {primary SS_HIGH}
+create_power_domain PD_CORE -elements {u_core} -supply {primary SS_LOW}
+
+# ---------------------------------------------------------------------
+# 4. Top-level IO 의 driver / receiver supply (PD_TOP 과 동일 전압)
+# ---------------------------------------------------------------------
+set_port_attributes -ports {clk rst_n din} -driver_supply   SS_HIGH
+set_port_attributes -ports {dout}          -receiver_supply SS_HIGH
+
+# ---------------------------------------------------------------------
+# 5. Power State Table (두 전원 모두 Always-On -> Isolation 불필요)
+# ---------------------------------------------------------------------
+add_port_state VDDH -state {HV 1.0}
+add_port_state VDDL -state {LV 0.8}
+add_port_state VSS  -state {GND 0.0}
+
+create_pst PST -supplies {VDDH VDDL VSS}
+add_pst_state ALL_ON -pst PST -state {HV LV GND}
+
+# ---------------------------------------------------------------------
+# 6. Level Shifter strategy
+#    PD_CORE 경계의 모든 in/out 포트에 대해 양방향(High<->Low) LS 삽입,
+#    LS 위치는 parent(PD_TOP) 쪽.
+#      - 입력 (top->core, 1.0V->0.8V) : input VDDH / output VDDL
+#      - 출력 (core->top, 0.8V->1.0V) : input VDDL / output VDDH
+# ---------------------------------------------------------------------
+set_level_shifter LS_CORE \
+    -domain     PD_CORE \
+    -applies_to both \
+    -rule       both \
+    -location   parent
